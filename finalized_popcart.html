@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PopCart – Shop Bright, Shop Happy</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* ---------- 1. COLOURS (inspired by Flipkart, Myntra, Amazon) ---------- */
+:root{
+  --blue:#2874f0; --navy:#172337; --yellow:#ffe500; --orange:#fb641b;
+  --pink:#ff3f6c; --green:#238c3a; --bg:#f1f3f6; --white:#fff; --grey:#6b7280;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Nunito Sans',sans-serif;background:var(--bg);color:var(--navy);font-size:16px}
+h1,h2,h3,.logo{font-family:'Poppins',sans-serif}
+button{font-family:inherit;cursor:pointer;border:0}
+img{display:block;width:100%;height:100%;object-fit:cover}
+:focus-visible{outline:3px solid var(--navy);outline-offset:2px}
+
+/* ---------- 2. TOP STRIP + HEADER ---------- */
+.promo{background:var(--yellow);color:var(--navy);text-align:center;padding:8px;font-weight:700;font-size:14px}
+header{position:sticky;top:0;z-index:20;background:var(--blue);display:flex;align-items:center;gap:18px;padding:12px 5%}
+.logo{font-size:28px;font-weight:800;color:#fff}
+.logo span{color:var(--yellow)}
+.search{flex:1;display:flex;max-width:640px}
+.search input{flex:1;padding:12px 16px;border:0;border-radius:6px 0 0 6px;font:inherit}
+.search button{background:var(--yellow);color:var(--navy);padding:0 22px;border-radius:0 6px 6px 0;font-weight:700}
+.cart-btn{margin-left:auto;background:var(--orange);color:#fff;padding:11px 20px;border-radius:6px;font-weight:700;font-size:16px}
+.cart-btn b{background:#fff;color:var(--orange);border-radius:12px;padding:1px 8px;margin-left:6px}
+
+/* ---------- 3. CATEGORY ROUND PHOTOS ---------- */
+.cat-row{background:#fff;display:flex;gap:28px;justify-content:center;padding:16px 5%;overflow-x:auto;box-shadow:0 2px 6px rgba(0,0,0,.08)}
+.cat-item{flex:none;text-align:center;background:none;font-weight:700;color:var(--navy);font-size:14px}
+.cat-item .ring{width:72px;height:72px;border-radius:50%;overflow:hidden;margin:0 auto 6px;border:4px solid transparent;background:#ddd}
+.cat-item.active .ring{border-color:var(--pink)}
+.cat-item.active{color:var(--pink)}
+
+/* ---------- 4. HERO BANNER ---------- */
+.hero{margin:20px 5%;border-radius:16px;overflow:hidden;display:grid;grid-template-columns:1fr 1fr;min-height:340px;
+  background:linear-gradient(120deg,var(--pink),var(--orange))}
+.hero-text{padding:40px 6%;color:#fff;display:flex;flex-direction:column;justify-content:center;align-items:flex-start}
+.hero h1{font-size:clamp(32px,5vw,56px);line-height:1.1;font-weight:800}
+.hero p{margin:12px 0 20px;font-size:18px;font-weight:600}
+.cta{background:var(--yellow);color:var(--navy);padding:14px 32px;border-radius:8px;font:700 17px 'Poppins';box-shadow:0 5px 0 #c7b400}
+.cta:active{transform:translateY(3px);box-shadow:0 2px 0 #c7b400}
+.timer{display:flex;gap:10px;margin-top:22px}
+.timer div{background:rgba(0,0,0,.25);border-radius:10px;padding:8px 14px;text-align:center;font:700 20px 'Poppins'}
+.timer small{display:block;font:600 10px 'Nunito Sans'}
+.hero-img{min-height:240px}
+
+/* ---------- 5. OFFER CHIPS ---------- */
+.offers{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin:0 5% 10px}
+.offer{padding:14px 18px;border-radius:12px;color:#fff;font:700 16px 'Poppins'}
+.offer small{display:block;font:600 13px 'Nunito Sans';opacity:.95}
+.o1{background:var(--blue)} .o2{background:var(--green)} .o3{background:var(--navy)} .o4{background:var(--pink)}
+
+/* ---------- 6. PRODUCT GRID ---------- */
+.section-title{margin:26px 5% 12px;font-size:24px;font-weight:700}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px;padding:0 5% 50px}
+.card{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.08);transition:box-shadow .2s,transform .2s}
+.card:hover{box-shadow:0 10px 24px rgba(0,0,0,.18);transform:translateY(-4px)}
+.pic{height:230px;position:relative;background:#e5e7eb}
+.badge{position:absolute;top:10px;left:10px;background:var(--orange);color:#fff;font:700 12px 'Poppins';padding:4px 10px;border-radius:20px}
+.info{padding:14px}
+.info h3{font-size:17px;font-weight:600}
+.brand{font-size:13px;color:var(--grey);margin-bottom:6px}
+.rating{display:inline-block;background:var(--green);color:#fff;font-weight:700;font-size:13px;padding:2px 8px;border-radius:5px}
+.price{margin-top:8px;font:700 20px 'Poppins'}
+.price s{font:400 14px 'Nunito Sans';color:var(--grey);margin:0 6px}
+.price em{font:700 14px 'Nunito Sans';font-style:normal;color:var(--green)}
+.add{width:100%;margin-top:12px;padding:11px;border-radius:8px;background:var(--orange);color:#fff;font:700 15px 'Poppins'}
+.add:hover{background:#e0530f}
+.empty{grid-column:1/-1;text-align:center;font-size:20px;font-weight:700;padding:40px}
+
+/* ---------- 7. CART DRAWER ---------- */
+.overlay{position:fixed;inset:0;background:rgba(23,35,55,.6);display:none;z-index:30}
+.overlay.open{display:block}
+.drawer{position:fixed;top:0;right:-420px;width:min(400px,100%);height:100%;background:#fff;z-index:40;transition:right .3s;display:flex;flex-direction:column}
+.drawer.open{right:0}
+.drawer-head{background:var(--blue);color:#fff;padding:16px 20px;display:flex;justify-content:space-between;align-items:center}
+.drawer-head button{background:none;color:#fff;font-size:28px}
+.items{flex:1;overflow-y:auto;padding:10px 20px}
+.item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #e5e7eb}
+.item .t{width:60px;height:60px;border-radius:8px;overflow:hidden;flex:none;background:#e5e7eb}
+.item .n{flex:1;font-weight:700;font-size:15px}
+.qty button{width:28px;height:28px;border-radius:50%;background:var(--yellow);font-weight:800}
+.qty span{display:inline-block;min-width:24px;text-align:center;font-weight:700}
+.total{padding:18px 20px;border-top:2px solid var(--bg);font:700 22px 'Poppins';display:flex;justify-content:space-between}
+.checkout{margin:0 20px 20px;padding:14px;border-radius:8px;background:var(--green);color:#fff;font:700 17px 'Poppins'}
+
+/* ---------- 8. TOAST + FOOTER ---------- */
+.toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,100px);background:var(--navy);color:var(--yellow);padding:12px 24px;border-radius:30px;font-weight:700;z-index:50;transition:transform .3s}
+.toast.show{transform:translate(-50%,0)}
+footer{background:var(--navy);color:#fff;text-align:center;padding:28px;font-weight:600}
+footer span{color:var(--yellow)}
+@media (max-width:700px){.hero{grid-template-columns:1fr}.hero-img{order:-1;height:200px}header{flex-wrap:wrap}.search{order:3;flex-basis:100%;max-width:none}.cat-row{justify-content:flex-start}}
+
+/* ---------- 9. PRODUCT PAGE ---------- */
+#pdp{display:none;margin:20px 5% 40px}
+.back{display:inline-block;margin-bottom:12px;font-weight:700;color:var(--blue);text-decoration:none}
+.pd{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:24px;background:#fff;border-radius:12px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.gal{display:flex;gap:12px}
+.thumbs{display:flex;flex-direction:column;gap:10px}
+.th{width:64px;height:64px;border-radius:8px;overflow:hidden;border:2px solid #e5e7eb;background:#e5e7eb;padding:0}
+.th.on{border-color:var(--blue)}
+.mainpic{flex:1;height:440px;border-radius:10px;overflow:hidden;background:#e5e7eb;cursor:zoom-in}
+.mainpic img{transition:transform .2s}
+.mainpic:hover img{transform:scale(1.5)!important}
+.pname{font-size:26px;margin:2px 0 8px}
+.muted{color:var(--grey);font-size:14px}
+.g{color:var(--green);font-weight:700}
+.price.big{font-size:30px}
+.box{border:1px solid #e5e7eb;border-radius:10px;padding:12px 14px;margin-top:14px}
+.box h4{font:700 15px 'Poppins';margin-bottom:8px}
+.box ul{list-style:none;display:grid;gap:5px;font-size:14px}
+.sz{min-width:48px;padding:9px 12px;margin:0 8px 6px 0;border-radius:8px;background:#fff;border:2px solid #d1d5db;font-weight:700}
+.sz.on{border-color:var(--pink);color:var(--pink)}
+.pin{display:flex;gap:8px;margin-bottom:8px}
+.pin input,.rvform input,.rvform textarea{padding:10px 12px;border:1px solid #d1d5db;border-radius:6px;font:inherit;width:100%}
+.pin input{flex:1}
+.pin button{background:var(--blue);color:#fff;padding:0 18px;border-radius:6px;font-weight:700}
+.btns{display:flex;gap:12px;margin-top:18px}
+.btns button{flex:1;margin:0;padding:14px;border-radius:8px;font:700 16px 'Poppins';color:#fff}
+.btns .add{background:var(--orange)} .btns .buy{background:var(--pink)}
+.sec{background:#fff;border-radius:12px;padding:20px;margin-top:18px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.sec h3{margin-bottom:10px;font-size:20px}
+.sec li{margin:0 0 6px 20px}
+.sec table{border-collapse:collapse;width:100%;max-width:600px}
+.sec td{padding:9px 12px;border-bottom:1px solid #e5e7eb;font-size:15px}
+.sec td:first-child{color:var(--grey);width:40%}
+.rvhead{display:flex;gap:30px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+.avg{font:800 42px 'Poppins'}
+.bars{flex:1;min-width:220px;max-width:420px}
+.bar{display:flex;align-items:center;gap:8px;font-size:13px;margin:3px 0}
+.bar i{flex:1;height:8px;background:#e5e7eb;border-radius:4px;overflow:hidden}
+.bar b{display:block;height:100%}
+.rv{padding:14px 0;border-top:1px solid #e5e7eb}
+.rv p{margin:6px 0}
+.help{background:#f1f3f6;padding:5px 12px;border-radius:14px;margin-top:6px;font-weight:700;font-size:13px}
+.rvform{display:grid;gap:10px;margin-top:16px;max-width:520px;border-top:2px solid var(--bg);padding-top:14px}
+.star{background:none;font-size:28px;color:#f5a623;padding:0 2px}
+.rvform .add{max-width:200px;margin:0}
+.rm{color:var(--pink);font-size:13px;font-weight:700}
+.sum{padding-top:10px;display:grid;gap:6px;font-weight:700;font-size:14px}
+.sum div{display:flex;justify-content:space-between}
+.bump{animation:bump .4s}
+@keyframes bump{40%{transform:scale(1.15)}}
+@media (max-width:700px){.pd{grid-template-columns:1fr}.gal{flex-direction:column-reverse}.thumbs{flex-direction:row}.mainpic{height:320px}}
+</style>
+</head>
+<body>
+
+<div class="promo">🎉 Free delivery above ₹499 · Use code POP10 for extra 10% off!</div>
+
+<header>
+  <div class="logo">Pop<span>Cart</span></div>
+  <div class="search">
+    <input id="searchBox" type="text" placeholder="Search for shoes, bags, gadgets..." aria-label="Search products">
+    <button type="button" id="searchBtn">Search</button>
+  </div>
+  <button class="cart-btn" id="openCart">🛒 Cart <b id="cartCount">0</b></button>
+</header>
+
+<nav class="cat-row" id="cats" aria-label="Categories"></nav>
+
+<section class="hero">
+  <div class="hero-text">
+    <h1>Mega Pop Sale<br>Up to 60% OFF</h1>
+    <p>Fashion, gadgets, bags and more at the lowest prices.</p>
+    <button class="cta" id="shopNow">Shop Now</button>
+    <div class="timer" aria-label="Sale ends in">
+      <div><span id="hh">00</span><small>HOURS</small></div>
+      <div><span id="mm">00</span><small>MINS</small></div>
+      <div><span id="ss">00</span><small>SECS</small></div>
+    </div>
+  </div>
+  <div class="hero-img"><img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=1200&q=85" alt="Shopping sale" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=700&q=80'"></div>
+</section>
+
+<div class="offers">
+  <div class="offer o1">Flat 10% off<small>on your first order</small></div>
+  <div class="offer o2">Free Delivery<small>on orders above ₹499</small></div>
+  <div class="offer o3">Easy Returns<small>7-day hassle-free returns</small></div>
+  <div class="offer o4">Pay on Delivery<small>available across India</small></div>
+</div>
+
+<h2 class="section-title" id="products">Trending products</h2>
+<main class="grid" id="grid"></main>
+
+<section id="pdp" aria-label="Product details"></section>
+
+<aside class="drawer" id="drawer" aria-label="Shopping cart">
+  <div class="drawer-head"><h2>Your Cart</h2><button id="closeCart" aria-label="Close cart">×</button></div>
+  <div class="items" id="items"></div>
+  <div class="total"><span>Total</span><span id="total">₹0</span></div>
+  <button class="checkout" id="checkout">Checkout</button>
+</aside>
+<div class="overlay" id="overlay"></div>
+<div class="toast" id="toast"></div>
+
+<footer>Made with ❤️ by <span>Vanya</span> · PopCart © 2026 – College Project</footer>
+
+<script>
+/* ---------- A. PRODUCT DATA ----------
+   img = a locally hosted photo path. Product photos are stored in assets/products. */
+const products = [
+  {id:1, name:"Running Sneakers", brand:"StrideX",   cat:"Fashion", img:"https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=900&q=85",        price:1499, old:2999, rating:4.5, tag:"Bestseller"},
+  {id:2, name:"Denim Jacket",     brand:"UrbanBlue", cat:"Fashion", img:"https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=900&q=85",    price:1899, old:3199, rating:4.3, tag:"Trending"},
+  {id:3, name:"Sunglasses",       brand:"ShadeCo",   cat:"Fashion", img:"https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&w=900&q=85",      price:599,  old:1299, rating:4.2, tag:"Hot Deal"},
+  {id:4, name:"Travel Backpack",  brand:"TrekPro",   cat:"Bags",    img:"https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=900&q=85",        price:999,  old:1999, rating:4.6, tag:"Bestseller"},
+  {id:5, name:"Leather Handbag",  brand:"Glamora",   cat:"Bags",    img:"https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=900&q=85",         price:1299, old:2499, rating:4.4, tag:"New"},
+  {id:6, name:"Wireless Headphones",brand:"BassBoom",cat:"Gadgets", img:"https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=900&q=85",      price:1999, old:4999, rating:4.7, tag:"60% OFF"},
+  {id:7, name:"Smart Watch",      brand:"TimeFit",   cat:"Gadgets", img:"https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=900&q=85",      price:2499, old:5999, rating:4.5, tag:"Hot Deal"},
+  {id:8, name:"Digital Camera",   brand:"SnapMax",   cat:"Gadgets", img:"https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=900&q=85",          price:8999, old:12999,rating:4.6, tag:"New"},
+  {id:9, name:"Table Lamp",       brand:"HomeGlow",  cat:"Home",    img:"https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=900&q=85",       price:449,  old:899,  rating:4.1, tag:"Deal"},
+  {id:10,name:"Ceramic Coffee Mug",brand:"SipStyle", cat:"Home",    img:"https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?auto=format&fit=crop&w=900&q=85",      price:199,  old:399,  rating:4.3, tag:"Deal"},
+  {id:11,name:"Teddy Bear",       brand:"CuddleKing",cat:"Toys",    img:"https://images.unsplash.com/photo-1559454403-b8fb88521f11?auto=format&fit=crop&w=900&q=85",      price:349,  old:699,  rating:4.8, tag:"Top Rated"},
+  {id:12,name:"Family Board Game",brand:"PlayZone",  cat:"Toys",    img:"https://images.unsplash.com/photo-1610890716171-6b1bb98ffd09?auto=format&fit=crop&w=900&q=85",       price:549,  old:999,  rating:4.4, tag:"Trending"}
+];
+const categories = [
+  {name:"All",     img:"shopping"},
+  {name:"Fashion", img:"fashion"},
+  {name:"Bags",    img:"handbag"},
+  {name:"Gadgets", img:"gadget"},
+  {name:"Home",    img:"livingroom"},
+  {name:"Toys",    img:"toys"}
+];
+
+let cart = [];
+try{ cart = JSON.parse(localStorage.getItem("popcart_cart")) || []; }catch(e){}
+let activeCat = "All";
+let searchText = "";
+
+// Product photos are served from this website, not third-party image hosts.
+function photo(p, w){ return p.img; }
+
+// Keep a local relevant-image fallback for the two products that sometimes need it.
+function setRelatedImage(imgEl, product){
+  const fallbacks = {
+    10: [
+      "https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?auto=format&fit=crop&w=900&q=85",
+      "https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?auto=format&fit=crop&w=900&q=85"
+    ],
+    12: [
+      "https://images.unsplash.com/photo-1610890716171-6b1bb98ffd09?auto=format&fit=crop&w=900&q=85",
+      "https://images.unsplash.com/photo-1610890716171-6b1bb98ffd09?auto=format&fit=crop&w=900&q=85"
+    ]
+  };
+  const choices = fallbacks[product.id] || [];
+  let attempt = 0;
+  imgEl.onerror = () => {
+    if (attempt < choices.length) {
+      imgEl.src = choices[attempt++];
+    } else {
+      imgEl.onerror = null;
+      imgEl.style.objectFit = "contain";
+      imgEl.alt = product.name + " image unavailable";
+    }
+  };
+}
+
+/* ---------- B. SHOW PRODUCTS ---------- */
+function showProducts(){
+  // Global fallback for product photos: keep trying category-relevant images.
+  document.getElementById("grid").addEventListener("error", function(event){
+    const img = event.target;
+    if (!img || img.tagName !== "IMG" || img.dataset.fallbackTried) return;
+    img.dataset.fallbackTried = "1";
+    const card = img.closest("[data-product-id]");
+    const id = card ? Number(card.dataset.productId) : 0;
+    if (id === 10) img.src = "https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?auto=format&fit=crop&w=900&q=85";
+    else if (id === 12) img.src = "https://images.unsplash.com/photo-1610890716171-6b1bb98ffd09?auto=format&fit=crop&w=900&q=85";
+  }, {once:false});
+
+  const grid = document.getElementById("grid");
+  const list = products.filter(p =>
+    (activeCat === "All" || p.cat === activeCat) &&
+    p.name.toLowerCase().includes(searchText.toLowerCase())
+  );
+  if(list.length === 0){
+    grid.innerHTML = '<div class="empty">No products found. Try another search 🔍</div>';
+    return;
+  }
+  grid.innerHTML = list.map(p => {
+    const off = Math.round((p.old - p.price) / p.old * 100);
+    return `
+    <article class="card">
+      <div class="pic" onclick="openProduct(${p.id})" style="cursor:pointer">
+        <img src="${photo(p,500)}" alt="${p.name}" loading="lazy" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=700&q=80'">
+        <span class="badge">${p.tag}</span>
+      </div>
+      <div class="info">
+        <h3 onclick="openProduct(${p.id})" style="cursor:pointer">${p.name}</h3>
+        <div class="brand">${p.brand}</div>
+        <span class="rating">${p.rating} ★</span>
+        <div class="price">₹${p.price}<s>₹${p.old}</s><em>${off}% off</em></div>
+        <button class="add" onclick="addToCart(${p.id})">Add to Cart</button>
+      </div>
+    </article>`;
+  }).join("");
+}
+
+function showCategories(){
+  document.getElementById("cats").innerHTML = categories.map(c => {
+    const categoryPhoto = {
+    "shopping": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=1200&q=85",
+    "fashion": "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=400&q=85",
+    "handbag": "https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=400&q=85",
+    "gadget": "https://images.unsplash.com/photo-1498049794561-7780e7231661?auto=format&fit=crop&w=400&q=85",
+    "livingroom": "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=400&q=85",
+    "toys": "https://images.unsplash.com/photo-1559454403-b8fb88521f11?auto=format&fit=crop&w=900&q=85"
+  };
+    const src = categoryPhoto[c.img] || categoryPhoto.shopping;
+    return `<button class="cat-item ${c.name===activeCat?'active':''}" onclick="pickCategory('${c.name}')">
+      <div class="ring"><img src="${src}" alt="" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=700&q=80'"></div>${c.name}</button>`;
+  }).join("");
+}
+function pickCategory(c){ activeCat = c; showCategories(); showProducts(); }
+
+/* ---------- C. CART LOGIC ---------- */
+function addToCart(id, size){
+  if(size === undefined && sizesOf(products.find(x => x.id === id)).length){
+    openProduct(id); toast("Please select a size"); return;
+  }
+  size = size || "";
+  const found = cart.find(i => i.id === id && (i.size || "") === size);
+  if(found){ found.qty++; } else { cart.push({id, qty:1, size}); }
+  updateCart();
+  toast("Added to cart ✅");
+  const cb = document.getElementById("openCart");
+  cb.classList.remove("bump"); void cb.offsetWidth; cb.classList.add("bump");
+}
+function changeQty(id, change, size){
+  size = size || "";
+  const item = cart.find(i => i.id === id && (i.size || "") === size);
+  if(!item) return;
+  item.qty += change;
+  if(item.qty <= 0){ cart = cart.filter(i => i !== item); }
+  updateCart();
+}
+function updateCart(){
+  cart = cart.filter(i => products.some(x => x.id === i.id));
+  let sub = 0, count = 0;
+  const html = cart.map(i => {
+    const p = products.find(x => x.id === i.id), sz = i.size || "";
+    sub += p.price * i.qty; count += i.qty;
+    return `<div class="item">
+      <div class="t" style="cursor:pointer" onclick="openProduct(${p.id});closeCart()"><img src="${photo(p,120)}" alt="" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=700&q=80'"></div>
+      <div class="n"><span style="cursor:pointer" onclick="openProduct(${p.id});closeCart()">${p.name}</span>${sz ? `<br><small>Size: ${sz}</small>` : ""}<br>₹${p.price} × ${i.qty} = ₹${p.price * i.qty}<br><a href="#" class="rm" onclick="changeQty(${p.id},-${i.qty},'${sz}');return false">Remove</a></div>
+      <div class="qty">
+        <button onclick="changeQty(${p.id},-1,'${sz}')" aria-label="Remove one">−</button>
+        <span>${i.qty}</span>
+        <button onclick="changeQty(${p.id},1,'${sz}')" aria-label="Add one">+</button>
+      </div></div>`;
+  }).join("");
+  const del = sub && sub < 499 ? 40 : 0;
+  const sum = `<div class="sum"><div><span>Subtotal (${count} item${count>1?"s":""})</span><span>₹${sub}</span></div><div><span>Delivery</span><span>${del ? "₹"+del : "FREE"}</span></div></div>`;
+  document.getElementById("items").innerHTML = html ? html + sum : "<p style='padding:20px;font-weight:700'>Your cart is empty 🛒</p>";
+  document.getElementById("total").textContent = "₹" + (sub + del);
+  document.getElementById("cartCount").textContent = count;
+  try{ localStorage.setItem("popcart_cart", JSON.stringify(cart)); }catch(e){}
+}
+
+/* ---------- D. OPEN / CLOSE CART, TOAST ---------- */
+const drawer = document.getElementById("drawer");
+const overlay = document.getElementById("overlay");
+function openCart(){ drawer.classList.add("open"); overlay.classList.add("open"); }
+function closeCart(){ drawer.classList.remove("open"); overlay.classList.remove("open"); }
+document.getElementById("openCart").onclick = openCart;
+document.getElementById("closeCart").onclick = closeCart;
+overlay.onclick = closeCart;
+
+function toast(msg){
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), 1500);
+}
+document.getElementById("checkout").onclick = () => {
+  if(cart.length === 0){ toast("Add something first 🙂"); return; }
+  cart = []; updateCart(); closeCart();
+  toast("Order placed! Thank you 🎉");
+};
+
+/* ---------- E. SEARCH + SHOP NOW ---------- */
+const box = document.getElementById("searchBox");
+function doSearch(){ searchText = box.value; showProducts(); }
+document.getElementById("searchBtn").onclick = doSearch;
+box.addEventListener("input", doSearch);
+document.getElementById("shopNow").onclick = () =>
+  document.getElementById("products").scrollIntoView({behavior:"smooth"});
+
+/* ---------- F. SALE COUNTDOWN (to midnight) ---------- */
+function tick(){
+  const end = new Date(); end.setHours(24,0,0,0);
+  const left = Math.floor((end - new Date()) / 1000);
+  const pad = n => String(n).padStart(2,"0");
+  document.getElementById("hh").textContent = pad(Math.floor(left/3600));
+  document.getElementById("mm").textContent = pad(Math.floor(left%3600/60));
+  document.getElementById("ss").textContent = pad(left%60);
+}
+setInterval(tick, 1000); tick();
+
+/* ---------- G. PRODUCT PAGE, REVIEWS, DELIVERY ---------- */
+// description | highlights | specifications for every product
+const DETAILS = {
+ 1:["Lightweight everyday running shoes with a breathable mesh upper and a cushioned sole for all-day comfort.","Breathable mesh upper|Cushioned EVA midsole|Anti-skid rubber outsole|Lace-up closure","Material:Mesh & Rubber|Fit:Regular|Occasion:Running, Casual|Warranty:3 months"],
+ 2:["Classic button-front denim jacket with a relaxed fit that layers well over tees and hoodies.","100% cotton denim|Button-front closure|Chest and side pockets|Machine washable","Fabric:Cotton Denim|Fit:Relaxed|Sleeve:Full Sleeve|Care:Machine Wash"],
+ 3:["UV-protected sunglasses with a lightweight frame and scratch-resistant lenses.","UV400 protection|Lightweight frame|Scratch-resistant lenses|Comes with a case","Frame:Polycarbonate|Lens:UV400|Shape:Wayfarer|Warranty:6 months"],
+ 4:["Spacious 35L backpack with padded straps, a laptop compartment and water-resistant fabric.","35L capacity|Padded laptop sleeve (15.6 inch)|Water-resistant fabric|Breathable padded straps","Capacity:35 L|Material:Polyester|Compartments:3|Warranty:1 year"],
+ 5:["Elegant faux-leather handbag with a roomy interior, zip closure and detachable sling strap.","Premium faux leather|Secure zip closure|Detachable sling strap|Inner zip and phone pockets","Material:Faux Leather|Closure:Zip|Strap:Detachable|Colour:Tan Brown"],
+ 6:["Over-ear Bluetooth headphones with deep bass, soft ear cushions and up to 30 hours of playback.","Bluetooth 5.0|Up to 30 hours playback|Deep bass drivers|Built-in mic for calls","Type:Over-ear|Connectivity:Bluetooth 5.0|Battery:30 hrs|Warranty:1 year"],
+ 7:["Fitness smartwatch with a bright display, heart-rate and sleep tracking, and notification alerts.","1.69 inch colour display|Heart-rate and SpO2 monitor|Multiple sports modes|7-day battery life","Display:1.69 inch|Water Resistance:IP68|Battery:7 days|Warranty:1 year"],
+ 8:["Compact 24MP digital camera with Full HD video, optical zoom and a sharp 3-inch screen.","24 MP sensor|Full HD video|3 inch LCD screen|Wi-Fi image transfer","Resolution:24 MP|Zoom:5x Optical|Video:1080p|Warranty:1 year"],
+ 9:["Warm-glow table lamp with a sturdy base, a cosy touch for bedside tables and study desks.","Warm white light|Sturdy stable base|Energy-efficient LED bulb|Easy plug-and-use","Power:9 W|Bulb:LED|Material:Metal & Fabric|Warranty:6 months"],
+ 10:["Glossy ceramic coffee mug with a comfortable handle, perfect for tea, coffee and cocoa.","Durable ceramic|Microwave safe|Dishwasher safe|350 ml capacity","Material:Ceramic|Capacity:350 ml|Microwave Safe:Yes|Pack of:1"],
+ 11:["Super-soft plush teddy bear that makes a lovely gift for birthdays and celebrations.","Ultra-soft plush fabric|Safe, non-toxic stuffing|Great gift item|Easy to clean","Height:60 cm|Material:Plush|Age Group:3+ years|Colour:Brown"],
+ 12:["A fun board game for the whole family. Easy to learn and great for 2 to 6 players.","2 to 6 players|Easy-to-learn rules|Quality board and pieces|Fun for ages 8+","Players:2-6|Age Group:8+ years|Play Time:45-60 min|Contents:Board, Cards, Dice"]
+};
+const CROPS = ["", "transform:scale(1.5);transform-origin:20% 20%", "transform:scale(1.5);transform-origin:80% 80%"];
+const NAMES = ["Aarav S.","Priya M.","Rohit K.","Sneha R.","Vikram P.","Ananya D."];
+const RT = [["Excellent!","Totally worth the price. Looks great and the quality is better than I expected."],
+ ["Good product","Good quality for this price. Delivery was on time and the packaging was neat."],
+ ["Value for money","Using it for a few weeks now and no complaints. Would recommend."],
+ ["Nice, could be better","Decent overall. Looks just like the pictures, the finishing could be slightly better."],
+ ["Loved it!","Bought it as a gift and everyone loved it. Fast delivery too."],
+ ["Fine for the price","Does the job well. Not premium, but good for the money."]];
+const PH = "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=700&q=80";
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+let userRev = {}; try{ userRev = JSON.parse(localStorage.getItem("popcart_reviews")) || {}; }catch(e){}
+let cur = null, selSize = "", sortBy = "recent", newStar = 0, lastScroll = 0;
+const voted = {};
+
+function sizesOf(p){ return p.id === 1 ? ["UK 6","UK 7","UK 8","UK 9","UK 10"] : p.id === 2 ? ["S","M","L","XL"] : []; }
+function deliveryDate(days){
+  const d = new Date(); d.setDate(d.getDate() + days);
+  return d.toLocaleDateString("en-IN", {weekday:"short", day:"numeric", month:"short"});
+}
+function sampleReviews(p){
+  const r = [5,5,5,5,5,5], order = [1,3,5,0,2,4];
+  for(let d = 30 - Math.round(p.rating * 6), i = 0; d > 0; d--, i++) r[order[i % 6]] = Math.max(1, r[order[i % 6]] - 1);
+  return r.map((x,i) => ({n:NAMES[(i + p.id) % 6], r:x, t:RT[i][0], x:RT[i][1], d:(i*9 + p.id%5 + 2) + " days ago", h:(p.id*3 + i*7) % 25 + 2, v:true}));
+}
+function allReviews(p){ return (userRev[p.id] || []).concat(sampleReviews(p)); }
+function syncRating(p){
+  if(userRev[p.id] && userRev[p.id].length){
+    const a = allReviews(p);
+    p.rating = +(a.reduce((s,x) => s + x.r, 0) / a.length).toFixed(1);
+  }
+}
+
+function reviewsHTML(p){
+  let rv = allReviews(p); const n = rv.length;
+  const avg = (rv.reduce((s,x) => s + x.r, 0) / n).toFixed(1);
+  if(sortBy === "high") rv = rv.slice().sort((a,b) => b.r - a.r);
+  if(sortBy === "low")  rv = rv.slice().sort((a,b) => a.r - b.r);
+  const bars = [5,4,3,2,1].map(s => {
+    const c = allReviews(p).filter(x => x.r === s).length;
+    const col = s >= 4 ? "var(--green)" : s === 3 ? "var(--orange)" : "#e53935";
+    return `<div class="bar"><span>${s} ★</span><i><b style="width:${c/n*100}%;background:${col}"></b></i><span>${c}</span></div>`;
+  }).join("");
+  const list = rv.map(x => {
+    const k = p.id + x.n + x.t, on = voted[k] ? 1 : 0;
+    return `<div class="rv"><span class="rating">${x.r} ★</span> <b>${esc(x.t)}</b><p>${esc(x.x)}</p>
+      <div class="muted">${esc(x.n)}${x.v ? ' · <span class="g">✔ Verified Purchase</span>' : ''} · ${x.d}</div>
+      <button class="help" onclick="helpful(this,'${esc(k).replace(/'/g,"")}',${x.h})">👍 Helpful (${x.h + on})</button></div>`;
+  }).join("");
+  return `<h3>Ratings & Reviews</h3>
+    <div class="rvhead"><div><div class="avg">${avg} ★</div><div class="muted">${n} ratings & reviews</div></div><div class="bars">${bars}</div></div>
+    <label class="muted">Sort by: <select onchange="sortBy=this.value;$('revbox').innerHTML=reviewsHTML(cur)">
+      <option value="recent" ${sortBy==="recent"?"selected":""}>Most Recent</option>
+      <option value="high" ${sortBy==="high"?"selected":""}>Highest Rating</option>
+      <option value="low" ${sortBy==="low"?"selected":""}>Lowest Rating</option></select></label>
+    ${list}
+    <div class="rvform"><h4>Write a review</h4>
+      <input id="rvName" placeholder="Your name" maxlength="30">
+      <div>${[1,2,3,4,5].map(i => `<button type="button" class="star" aria-label="${i} star" onclick="setStar(${i})">${i <= newStar ? "★" : "☆"}</button>`).join("")}</div>
+      <input id="rvTitle" placeholder="Review title" maxlength="60">
+      <textarea id="rvText" rows="3" placeholder="Share your experience" maxlength="400"></textarea>
+      <button class="add" onclick="submitReview()">Submit review</button></div>`;
+}
+function helpful(btn, k, h){
+  if(voted[k]){ toast("Already marked helpful"); return; }
+  voted[k] = true; btn.textContent = "👍 Helpful (" + (h + 1) + ")";
+}
+function setStar(n){
+  newStar = n;
+  document.querySelectorAll(".star").forEach((b,i) => b.textContent = i < n ? "★" : "☆");
+}
+function submitReview(){
+  const n = $("rvName").value.trim(), t = $("rvTitle").value.trim(), x = $("rvText").value.trim();
+  if(!n || !newStar || !x){ toast("Add name, stars and comment"); return; }
+  (userRev[cur.id] = userRev[cur.id] || []).unshift({n, r:newStar, t:t || "Nice product", x, d:"Just now", h:0, v:false});
+  try{ localStorage.setItem("popcart_reviews", JSON.stringify(userRev)); }catch(e){}
+  syncRating(cur); newStar = 0; showProducts(); renderPDP(cur);
+  $("revbox").scrollIntoView({behavior:"smooth"});
+  toast("Thanks for your review ⭐");
+}
+
+function renderPDP(p){
+  cur = p;
+  const D = DETAILS[p.id], off = Math.round((p.old - p.price) / p.old * 100), sz = sizesOf(p), n = allReviews(p).length;
+  $("pdp").innerHTML = `
+  <a class="back" href="#" onclick="goHome();return false">← Back to products</a>
+  <div class="pd">
+    <div class="gal">
+      <div class="thumbs">${CROPS.map((c,i) => `<button class="th ${i===0?"on":""}" onclick="setPic(${i})" aria-label="View ${i+1}"><img src="${p.img}" alt="" style="${c}" onerror="this.onerror=null; this.src='${PH}'"></button>`).join("")}</div>
+      <div class="mainpic" onmousemove="zoomMove(event)"><img id="mainImg" src="${p.img}" alt="${esc(p.name)}" onerror="this.onerror=null; this.src='${PH}'"></div>
+    </div>
+    <div class="pinfo">
+      <div class="brand">${p.brand}</div>
+      <h2 class="pname">${esc(p.name)}</h2>
+      <span class="rating">${p.rating} ★</span> <span class="muted">${n} ratings & reviews</span>
+      <div class="price big">₹${p.price}<s>₹${p.old}</s><em>${off}% off</em></div>
+      <div class="muted">Inclusive of all taxes · ${p.price >= 499 ? '<span class="g">Free delivery</span>' : "Delivery ₹40"}</div>
+      <div class="box"><h4>Available offers</h4><ul><li>🏷️ Extra 10% off with code <b>POP10</b></li><li>💵 Pay on Delivery available</li><li>↩️ 7-day easy returns</li></ul></div>
+      ${sz.length ? `<div class="box"><h4>Select size</h4>${sz.map(s => `<button class="sz ${s===selSize?"on":""}" onclick="pickSize('${s}')">${s}</button>`).join("")}</div>` : ""}
+      <div class="box"><h4>Delivery</h4>
+        <div class="pin"><input id="pin" maxlength="6" inputmode="numeric" placeholder="Enter 6-digit PIN code" aria-label="PIN code"><button onclick="checkPin()">Check</button></div>
+        <div id="pinMsg">🚚 Expected delivery by <b>${deliveryDate(4)}</b></div>
+        <div class="muted">Cash on Delivery available · 7-day return policy</div></div>
+      <div class="btns"><button class="add" onclick="pdpAdd(false)">ADD TO CART</button><button class="buy" onclick="pdpAdd(true)">BUY NOW</button></div>
+    </div>
+  </div>
+  <div class="sec"><h3>Product Description</h3><p>${D[0]}</p><ul>${D[1].split("|").map(h => `<li>${h}</li>`).join("")}</ul></div>
+  <div class="sec"><h3>Specifications</h3><table>${D[2].split("|").map(r => { const [k,v] = r.split(":"); return `<tr><td>${k}</td><td>${v}</td></tr>`; }).join("")}</table></div>
+  <div class="sec" id="revbox">${reviewsHTML(p)}</div>`;
+}
+function setPic(i){
+  $("mainImg").style.cssText = CROPS[i];
+  document.querySelectorAll(".th").forEach((b,k) => b.classList.toggle("on", k === i));
+}
+function zoomMove(e){
+  const r = e.currentTarget.getBoundingClientRect();
+  $("mainImg").style.transformOrigin = ((e.clientX - r.left) / r.width * 100) + "% " + ((e.clientY - r.top) / r.height * 100) + "%";
+}
+function pickSize(s){
+  selSize = s;
+  document.querySelectorAll(".sz").forEach(b => b.classList.toggle("on", b.textContent === s));
+}
+function checkPin(){
+  const v = $("pin").value.trim();
+  $("pinMsg").innerHTML = /^\d{6}$/.test(v)
+    ? `✅ Delivering to ${v} · by <b>${deliveryDate(3 + (+v[5] % 3))}</b>`
+    : "❌ Please enter a valid 6-digit PIN code";
+}
+function pdpAdd(buy){
+  if(sizesOf(cur).length && !selSize){ toast("Please select a size"); return; }
+  addToCart(cur.id, selSize);
+  if(buy) openCart();
+}
+
+/* ---------- H. PAGE SWITCHING (home <-> product) ---------- */
+const HOME = [".hero", ".offers", "#products", "#grid"];
+function openProduct(id){ lastScroll = window.scrollY; location.hash = "product-" + id; }
+function goHome(){ if(location.hash) location.hash = ""; }
+function route(){
+  const m = /^#product-(\d+)$/.exec(location.hash);
+  const p = m && products.find(x => x.id === +m[1]);
+  HOME.forEach(s => document.querySelectorAll(s).forEach(e => e.style.display = p ? "none" : ""));
+  $("pdp").style.display = p ? "block" : "none";
+  if(p){
+    if(!cur || cur.id !== p.id){ selSize = ""; newStar = 0; sortBy = "recent"; }
+    renderPDP(p); window.scrollTo(0,0);
+  } else { window.scrollTo(0, lastScroll); }
+}
+window.addEventListener("hashchange", route);
+const _pickCategory = pickCategory;
+pickCategory = function(c){ _pickCategory(c); lastScroll = 0; goHome(); };
+box.addEventListener("input", () => { lastScroll = 0; goHome(); });
+$("searchBtn").addEventListener("click", () => { lastScroll = 0; goHome(); });
+products.forEach(syncRating);
+
+/* ---------- START ---------- */
+showCategories(); showProducts(); updateCart(); route();
+</script>
+</body>
+</html>
